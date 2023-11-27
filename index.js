@@ -32,24 +32,33 @@ async function run() {
 
     // all database collection
     const userDB = client.db("bodyFlex-hub").collection("users");
+    const newletterDB = client.db("bodyFlex-hub").collection("newsletters");
 
     // create user
-    app.post("/users", async(req,res)=>{
-        const user = req.body;
-        // console.log(user)
-        const query = {email: user?.email}
-        const isExistUser = await userDB.findOne(query)
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      // console.log(user)
+      const query = { email: user?.email }
+      const isExistUser = await userDB.findOne(query)
 
-        if(isExistUser){
-          return res.send({message: "User Already Exist"})
-        }
-        const result = await userDB.insertOne(user)
-        res.send(result)
+      if (isExistUser) {
+        return res.send({ message: "User Already Exist" })
+      }
+      const result = await userDB.insertOne(user)
+      res.send(result)
     })
 
 
 
+    // newseltters
+    app.post("/newsletters",async(req,res) =>{
+      const subscribe = req.body;
+      // console.log(subscribe)
 
+      // save
+      const result = await newletterDB.insertOne(subscribe);
+      res.send(result)
+    })
 
 
 
@@ -68,11 +77,11 @@ run().catch(console.dir);
 
 
 
-app.get("/",(req,res)=>{
-    res.send("Hi api ready");
+app.get("/", (req, res) => {
+  res.send("Hi api ready");
 })
 
 // listen the server
-app.listen(port,()=>{
-    console.log(`localhost runing on ${port}`)
+app.listen(port, () => {
+  console.log(`localhost runing on ${port}`)
 })
