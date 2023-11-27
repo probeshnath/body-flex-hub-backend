@@ -33,6 +33,8 @@ async function run() {
     // all database collection
     const userDB = client.db("bodyFlex-hub").collection("users");
     const newletterDB = client.db("bodyFlex-hub").collection("newsletters");
+    const forumsDB = client.db("bodyFlex-hub").collection("forums");
+
 
     // create user
     app.post("/users", async (req, res) => {
@@ -49,24 +51,24 @@ async function run() {
     })
 
     // fetch all trainer
-    app.get("/trainers", async(req,res) =>{
-      const query = {role: "trainer"}
+    app.get("/trainers", async (req, res) => {
+      const query = { role: "trainer" }
       const trainers = await userDB.find(query).toArray();
       res.send(trainers);
     })
 
     // be beTrainer
-    app.patch("/beTrainer/:email", async(req,res) =>{
+    app.patch("/beTrainer/:email", async (req, res) => {
       const email = req.params.email;
       const data = req.body;
       // console.log("email",email)
       // console.log("data",data)
-      const filter = {email : email}
+      const filter = { email: email }
       const updatedData = {
-        $set:{
+        $set: {
           age: data.age,
           available_day: parseInt(data.available_day),
-          available_week: parseInt(data.available_week) ,
+          available_week: parseInt(data.available_week),
           skills: data.skills,
           role: "applied",
           img: data.img
@@ -76,10 +78,31 @@ async function run() {
       res.send(result)
     })
 
+    // appliedTrainers
+    app.get("/appliedTrainers", async (req, res) => {
+      const query = { role: "applied" }
+      const result = await userDB.find(query).toArray()
+      res.send(result)
+    })
+
+    // add trainer to normal user
+    app.put("/addTrainer/:email", async (req, res) => {
+      const userEmail = req.params.email;
+      // console.log(user)
+      const filter = { email: userEmail }
+      const updatedData = {
+        $set: {
+          role: "trainer"
+        }
+      }
+      const result = await userDB.updateOne(filter, updatedData)
+      res.send(result)
+    })
+
 
 
     // newseltters user subscription save
-    app.post("/newsletters",async(req,res) =>{
+    app.post("/newsletters", async (req, res) => {
       const subscribe = req.body;
       // console.log(subscribe)
       // save
@@ -88,18 +111,24 @@ async function run() {
     })
 
     // get api user subcriptinon
-    app.get("/newsletters", async(req,res)=>{
+    app.get("/newsletters", async (req, res) => {
       const result = await newletterDB.find().toArray();
       res.send(result)
     })
     // subscriber delete 
-    app.delete("/newsletters/:id", async(req,res) =>{
+    app.delete("/newsletters/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await newletterDB.deleteOne(query)
       res.send(result)
     })
 
+    // forums / post 
+    app.post('/forums', async(req,res) =>{
+      const post = req.body;
+      const result = await forumsDB.insertOne(post);
+      res.send(result)
+    })
 
 
     // await client.db("admin").command({ ping: 1 });
