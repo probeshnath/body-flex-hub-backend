@@ -55,6 +55,27 @@ async function run() {
       res.send(trainers);
     })
 
+    // be beTrainer
+    app.patch("/beTrainer/:email", async(req,res) =>{
+      const email = req.params.email;
+      const data = req.body;
+      // console.log("email",email)
+      // console.log("data",data)
+      const filter = {email : email}
+      const updatedData = {
+        $set:{
+          age: data.age,
+          available_day: parseInt(data.available_day),
+          available_week: parseInt(data.available_week) ,
+          skills: data.skills,
+          role: "applied",
+          img: data.img
+        }
+      }
+      const result = await userDB.updateOne(filter, updatedData)
+      res.send(result)
+    })
+
 
 
     // newseltters user subscription save
