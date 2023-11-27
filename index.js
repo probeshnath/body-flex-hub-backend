@@ -34,6 +34,7 @@ async function run() {
     const userDB = client.db("bodyFlex-hub").collection("users");
     const newletterDB = client.db("bodyFlex-hub").collection("newsletters");
     const forumsDB = client.db("bodyFlex-hub").collection("forums");
+    const classesDB = client.db("bodyFlex-hub").collection("classes");
 
 
     // create user
@@ -130,6 +131,14 @@ async function run() {
       res.send(result)
     })
 
+    // all classes
+    app.post("/classes", async(req,res) =>{
+      const newClass = req.body;
+      const result = await classesDB.insertOne(newClass);
+      res.send(result)
+
+
+    })
 
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
