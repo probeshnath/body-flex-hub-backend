@@ -48,6 +48,13 @@ async function run() {
       res.send(result)
     })
 
+    // fetch all trainer
+    app.get("/trainers", async(req,res) =>{
+      const query = {role: "trainer"}
+      const trainers = await userDB.find(query).toArray();
+      res.send(trainers);
+    })
+
 
 
     // newseltters user subscription save
