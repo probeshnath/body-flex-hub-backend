@@ -11,7 +11,7 @@ app.use(express.json())
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = process.env.MONGODB_KEY;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -50,18 +50,27 @@ async function run() {
 
 
 
-    // newseltters
+    // newseltters user subscription save
     app.post("/newsletters",async(req,res) =>{
       const subscribe = req.body;
       // console.log(subscribe)
-
       // save
       const result = await newletterDB.insertOne(subscribe);
       res.send(result)
     })
 
-
-
+    // get api user subcriptinon
+    app.get("/newsletters", async(req,res)=>{
+      const result = await newletterDB.find().toArray();
+      res.send(result)
+    })
+    // subscriber delete 
+    app.delete("/newsletters/:id", async(req,res) =>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await newletterDB.deleteOne(query)
+      res.send(result)
+    })
 
 
 
