@@ -29,6 +29,8 @@ async function run() {
     await client.connect();
     // Send a ping to confirm a successful connection
 
+    // jwt 
+
 
     // all database collection
     const userDB = client.db("bodyFlex-hub").collection("users");
@@ -91,7 +93,8 @@ async function run() {
           available_week: parseInt(data.available_week),
           skills: data.skills,
           role: "applied",
-          img: data.img
+          img: data.img,
+          slots: data.slots
         }
       }
       const result = await userDB.updateOne(filter, updatedData)
@@ -192,7 +195,7 @@ async function run() {
       // console.log(id)
       const query = {_id : new ObjectId(id)}
       const data = await classesDB.findOne(query)
-      console.log(data)
+      // console.log(data)
       const email = data?.trainer;
       // console.log(email)
       const userEmail = {email: email}
@@ -207,6 +210,13 @@ async function run() {
     })
 
 
+
+    // gallery picture
+    const galleryDB = client.db("bodyFlex-hub").collection("gallerys");
+    app.get("/gallerys",async(req,res) =>{
+      const result = await galleryDB.find().toArray();
+      res.send(result)
+    })
 
 
 
