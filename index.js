@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express()
-require('dotenv').config()
 const cors = require('cors')
+require('dotenv').config()
+const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000;
 
 
@@ -30,6 +31,13 @@ async function run() {
     // Send a ping to confirm a successful connection
 
     // jwt 
+    app.post('/jwt', async(req,res) =>{
+      const user = req.body;
+      // console.log("tokken",user)
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_KEY, {expiresIn: "1hr"})
+      // console.log("ttt",token)
+      res.send({token})
+    })
 
 
     // all database collection
@@ -56,7 +64,7 @@ async function run() {
     // get user by email
     app.get('/users/:email',async(req,res) =>{
       const email = req.params.email;
-      console.log(email)
+      // console.log(email)
       const query = {email: email}
       const result = await userDB.findOne(query);
       res.send(result)
@@ -164,7 +172,7 @@ async function run() {
       const id = req.params.id;
       const post = req.body;
       const query = {_id : new ObjectId(id)}
-      console.log(post)
+      // console.log(post)
       const updateData = {
         $set :{
           like : post?.like,
