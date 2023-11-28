@@ -144,6 +144,26 @@ async function run() {
       res.send(result)
     })
 
+    // get single class data
+    app.get("/classes/:id",async(req,res) =>{
+      const id = req.params.id;
+      // console.log(id)
+      const query = {_id : new ObjectId(id)}
+      const data = await classesDB.findOne(query)
+      console.log(data)
+      const email = data?.trainer;
+      // console.log(email)
+      const userEmail = {email: email}
+
+      const trainerInfo = await userDB.findOne(userEmail);
+      // console.log(trainerInfo)
+      const classInfo = {
+        data,
+        trainerInfo
+      }
+      res.send(classInfo)
+    })
+
 
 
 
