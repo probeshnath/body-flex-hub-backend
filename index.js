@@ -136,9 +136,18 @@ async function run() {
       const newClass = req.body;
       const result = await classesDB.insertOne(newClass);
       res.send(result)
-
-
     })
+
+    // get all class
+    app.get("/classes", async(req,res) =>{
+      const result = await classesDB.find().toArray();
+      res.send(result)
+    })
+
+
+
+
+
 
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
