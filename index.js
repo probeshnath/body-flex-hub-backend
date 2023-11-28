@@ -58,6 +58,16 @@ async function run() {
       res.send(trainers);
     })
 
+    // get single trainer
+    app.get("/trainers/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = {_id : new ObjectId(id)}
+      // const query = { role: "trainer" }
+      const trainer = await userDB.findOne(filter)
+      // const trainer = await trainers.filter(train => train._id === filter) 
+      res.send(trainer);
+    })
+
     // be beTrainer
     app.patch("/beTrainer/:email", async (req, res) => {
       const email = req.params.email;
@@ -130,6 +140,29 @@ async function run() {
       const result = await forumsDB.insertOne(post);
       res.send(result)
     })
+
+    // get all forum
+    app.get("/forums",async(req,res) =>{
+      const result = await forumsDB.find().toArray();
+      res.send(result)
+    })
+
+    // handle like for forum post
+    app.patch("/updateFourm/:id", async(req,res)=>{
+      const id = req.params.id;
+      const post = req.body;
+      const query = {_id : new ObjectId(id)}
+      console.log(post)
+      const updateData = {
+        $set :{
+          like : post?.like,
+          disLike: post?.disLike
+        }
+      }
+      const result = await forumsDB.updateOne(query,updateData)
+      res.send(result)
+    })
+
 
     // all classes
     app.post("/classes", async(req,res) =>{
