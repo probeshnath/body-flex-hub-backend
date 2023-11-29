@@ -47,6 +47,7 @@ async function run() {
     const forumsDB = client.db("bodyFlex-hub").collection("forums");
     const classesDB = client.db("bodyFlex-hub").collection("classes");
     const cartClasseDB = client.db("bodyFlex-hub").collection("cartClass");
+    const classPayment = client.db("bodyFlex-hub").collection("classPayment");
 
 
     // create user
@@ -244,6 +245,21 @@ async function run() {
       const result = await cartClasseDB.findOne(query);
       res.send(result);
     })
+    // update status
+      app.put("/cartClass/:id", async(req,res) =>{
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id)}
+      const body = req.body;
+      const updateDoc = {
+        $set: {
+          status: body.status,
+          update_price: body.price,
+          classData: body.classData
+        }
+      }
+      const result = await cartClasseDB.updateOne(query,updateDoc);
+      res.send(result);
+    })
 
 
 
@@ -267,6 +283,21 @@ async function run() {
       })
     })
 
+    // payment for clsaa
+    app.post('/payments',async(req,res) =>{
+      const payment = req.body;
+      const paymentResult = await classPayment.insertOne(payment);
+
+      // carefully delete each item from the cart
+      const query = {_id: new ObjectId(payment.bookedId)}
+      // console.log(" payment", payment)
+
+      // this clss remove or delete from cart class
+      const deleteCartCls = await cartClasseDB.deleteOne(query)
+
+      res.send({paymentResult,deleteCartCls})
+
+    })
 
 
 
