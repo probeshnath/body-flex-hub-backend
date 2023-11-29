@@ -166,7 +166,11 @@ async function run() {
 
     // get all forum
     app.get("/forums",async(req,res) =>{
-      const result = await forumsDB.find().toArray();
+      // console.log(req.query)
+      const page = parseInt(req?.query?.page )
+      const size = parseInt(req?.query?.size)
+
+      const result = await forumsDB.find().skip(page * size).limit(size).toArray();
       res.send(result)
     })
 
