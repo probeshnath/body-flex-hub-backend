@@ -46,6 +46,7 @@ async function run() {
     const newletterDB = client.db("bodyFlex-hub").collection("newsletters");
     const forumsDB = client.db("bodyFlex-hub").collection("forums");
     const classesDB = client.db("bodyFlex-hub").collection("classes");
+    const cartClasseDB = client.db("bodyFlex-hub").collection("cartClass");
 
 
     // create user
@@ -226,6 +227,21 @@ async function run() {
       const result = await galleryDB.find().toArray();
       res.send(result)
     })
+
+
+
+    // cartClass
+    app.post("/cartClass",async(req,res) =>{
+      const data = req.body;
+      // console.log("my added data",data)
+      const result = await cartClasseDB.insertOne(data);
+      res.send(result)
+    })
+
+
+
+
+
 
 
     // payment intent
