@@ -73,6 +73,26 @@ async function run() {
       res.send(result)
     })
 
+    // user update
+    app.put("/user/:email",async(req,res)=>{
+      const userEmail = req.params.email;
+      const user = req.body;
+
+      const email = {email: userEmail}
+      const updateDoc = {
+        $set:{
+          name: user.name,
+          height: user.height,
+          age: user.age,
+          blood: user.blood,
+          skills: user.skills,
+          description: user.description
+        }
+      }
+      const result = await userDB.updateOne(email,updateDoc)
+      res.send(result)
+    })
+
     // fetch all trainer
     app.get("/trainers", async (req, res) => {
       const query = { role: "trainer" }
